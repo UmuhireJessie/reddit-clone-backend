@@ -6,6 +6,10 @@ class UserService {
         await newUser.save()
         return newUser
     }
+
+    static async userExist(data) {
+        return await user.findOne(data)
+    }
 }
 
 module.exports = UserService
