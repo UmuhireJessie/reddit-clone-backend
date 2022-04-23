@@ -45,6 +45,7 @@ class UserControllers {
                     .header("authenticate", token)
                     .json({
                         message: "user successful logged in",
+                        token
                     })
             }
             return res.status(400).json({ message: 'Invalid password' });
