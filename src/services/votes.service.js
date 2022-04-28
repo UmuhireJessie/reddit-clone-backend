@@ -3,15 +3,17 @@ const post = require("../models/post")
 
 class VoteService {
     static async createUpVote(user_id, id) {
-        const upVote = await vote.findOne({ user_id: user_id })
+        const upVote = await vote.findOne({ user_id: user_id, post_id: id.toString() })
         const votePost = await post.findById(id)
         if (!upVote) {
             const upVoteCreate = await vote.create({
                 user_id: user_id,
+                post_id: id.toString(),
                 like: true
             })
             votePost.votes.push(upVoteCreate)
             votePost.likes++
+            console.log(votePost)
         }
         else if (upVote.like === true) {
             upVote.like = null
@@ -45,7 +47,12 @@ class VoteService {
                     votePost.votes[vote].like = true
                 }
             }
-            votePost.likes += 2
+            if (votePost.likes === 0) {
+                votePost.likes += 1
+            }
+            else if (votePost.likes !== 0) {
+                votePost.likes += 2
+            }
             await upVote.save()
         }
         await votePost.save()
@@ -53,15 +60,17 @@ class VoteService {
     }
 
     static async createDownVote(user_id, id) {
-        const downVote = await vote.findOne({ user_id: user_id })
+        const downVote = await vote.findOne({ user_id: user_id, post_id: id.toString() })
         const votePost = await post.findById(id)
         if (!downVote) {
             const upVoteCreate = await vote.create({
                 user_id: user_id,
+                post_id: id.toString(),
                 like: false
             })
             votePost.votes.push(upVoteCreate)
             votePost.likes--
+            await upVoteCreate.save()
         }
         else if (downVote.like === false) {
             downVote.like = null
@@ -94,8 +103,15 @@ class VoteService {
                     votePost.votes[vote].like = false
                 }
             }
-            votePost.likes -= 2
-            if (votePost.likes < 0) votePost.likes = 0
+            if (votePost.likes > 1) {
+                votePost.likes -= 2
+
+            }
+            else if (votePost.likes <= 1) {
+                votePost.likes -= 1
+                if (votePost.likes < 0) votePost.likes = 0
+
+            }
             await downVote.save()
         }
         await votePost.save()

@@ -17,6 +17,10 @@ class PostService {
     static async delete(id) {
         return await post.deleteOne({ _id: id })
     }
+
+    static async findCategory(data) {
+        return await post.find({ data })
+    }
 }
 
 module.exports = PostService

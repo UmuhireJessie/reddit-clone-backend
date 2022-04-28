@@ -7,6 +7,9 @@ const voteSchema = mongoose.Schema({
     user_id: {
         type: String
     },
+    post_id: {
+        type: String
+    }
 })
 
 module.exports = mongoose.model("vote", voteSchema)

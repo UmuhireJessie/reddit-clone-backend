@@ -3,10 +3,18 @@ const VoteService = require("../services/votes.service")
 class PostController {
     static async createPost(req, res) {
         try {
-            const post = await PostService.createPost(req.body)
+            const { user } = req
+            const { title, content, image, category } = req.body
+            const post = await PostService.createPost({
+                title,
+                content,
+                image,
+                category
+            })
+            const updatedPost = await VoteService.createUpVote(user._id.toString(), post._id.toString())
             return res.status(200).json({
                 message: "Post created successfully",
-                data: post
+                data: updatedPost
             })
         } catch (error) {
             console.log(error)
@@ -118,6 +126,22 @@ class PostController {
 
             return res.status(200).json({
                 data: upVote
+            })
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({
+                error: error.message
+            })
+        }
+    }
+
+    static async subRedditCategory(req, res) {
+        try {
+            const { category } = req.query
+            const subreddits = await PostService.findCategory(category)
+            res.status(200).json({
+                message: "subreddits",
+                data: subreddits
             })
         } catch (error) {
             console.log(error)

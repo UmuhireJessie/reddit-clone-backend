@@ -18,4 +18,7 @@ route.post("/:postId/upvote", userLoggedIn, validatePostId, PostController.postU
 // downvotes
 route.post("/:postId/downvote", userLoggedIn, validatePostId, PostController.postDownvote)
 
+// subreddits
+route.get("/:category", userLoggedIn, PostController.subRedditCategory)
+
 module.exports = route

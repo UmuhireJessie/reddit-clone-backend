@@ -21,6 +21,7 @@ class CommentController {
     static async updateComment(req, res) {
         try {
             const { comment } = req
+            const { post } = req
             const { name, content, downVotes, upVotes } = req.body
 
             if (name) comment.name = name
@@ -28,13 +29,25 @@ class CommentController {
             if (downVotes) comment.downVotes = downVotes
             if (upVotes) comment.upVotes = upVotes
 
-            await comment.save()
+            for (let id in post.comments) {
+                // console.log(post.comments[id]._id, comment._id)
+                if (post.comments[id]._id.toString() === comment._id.toString()) {
+                    console.log(id)
+                    if (name) post.comments[id].name = name
+                    if (content) post.comments[id].content = content
+                    if (downVotes) post.comments[id].downVotes = downVotes
+                    if (upVotes) post.comments[id].upVotes = upVotes
+                    console.log("updated")
+                    console.log(post)
+                }
+            }
 
             await comment.save()
-
+            await post.save()
+            console.log(post)
             res.status(200).json({
                 message: "comment updated",
-                data: comment
+                data: post
             })
 
         } catch (error) {
@@ -94,6 +107,8 @@ class CommentController {
             })
         }
     }
+
+
 }
 
 module.exports = CommentController

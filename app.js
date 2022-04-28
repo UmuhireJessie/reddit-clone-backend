@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const morgan = require("morgan")
 const routes = require("./src/routes/index")
 const swaggerUi = require("swagger-ui-express")
+const cors = require("cors")
 // const swaggerDoc = require("./documentation/index")
 require("dotenv").config()
 
@@ -14,6 +15,7 @@ const server = async () => {
             .then(() => {
                 console.log("MongoDB connected")
             })
+        app.use(cors())
         app.use(express.json())
         app.use(morgan("dev"))
         app.use("/api/v1", routes)
