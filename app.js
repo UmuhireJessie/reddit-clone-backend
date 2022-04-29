@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const morgan = require("morgan")
 const routes = require("./src/routes/index")
 const swaggerUi = require("swagger-ui-express")
+const swaggerDoc = require("./swagger.json");
 const cors = require("cors")
 // const swaggerDoc = require("./documentation/index")
 require("dotenv").config()
@@ -18,8 +19,13 @@ const server = async () => {
         app.use(cors())
         app.use(express.json())
         app.use(morgan("dev"))
+        app.use(
+            "/api-docs",
+            swaggerUi.serve,
+            swaggerUi.setup(swaggerDoc, { extended: true })
+          );
         app.use("/api/v1", routes)
-        // app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc))
+        
         app.get("/", (req, res) => {
             res.send("Welcome to our API")
         })
